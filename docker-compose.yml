@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    volumes:
+      - .:/work
+  web:
+    image: nginx:1.19-alpine
+    ports:
+      - 10080:80
+    volumes:
+      - ./public:/work/public
+      - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /work
+  db:
+    image: mysql:latest
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      - MYSQL_DATABASE=laravel_local
+      - MYSQL_USER=phper
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+      - TZ=Asia/Tokyo
+volumes:
+  db-store:
