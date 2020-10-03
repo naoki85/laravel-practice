@@ -53,4 +53,35 @@ class RouteTaskTest extends TestCase
         $response = $this->post('/task', ['name' => str_repeat('a', 256)]);
         $response->assertStatus(302);
     }
+
+    /**
+     * DELETE /task
+     * test the success of task creation.
+     *
+     * @return void
+     */
+    public function testSuccessOfDeleteTask()
+    {
+        $task = factory(Task::class)->create();
+
+        $response = $this->delete('/task/'.$task->id);
+        $response->assertStatus(302);
+
+        $this->assertEmpty(Task::find($task->id));
+    }
+
+    /**
+     * DELETE /task
+     * test disable deleting other user's task
+     *
+     * @return void
+     */
+    public function testDisableOfDeletingOtherUserTask()
+    {
+        $task = factory(Task::class)->create();
+
+        $request_id = $task->id + 1;
+        $response = $this->delete('/task/'.$request_id);
+        $response->assertStatus(404);
+    }
 }
