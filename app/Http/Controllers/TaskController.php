@@ -25,8 +25,8 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = Task::orderBy('created_at', 'asc')->get();
-    
+        $tasks = Task::where('user_id', $request->user()->id)->get();
+
         return view('tasks', [
             'tasks' => $tasks
         ]);
