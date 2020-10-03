@@ -62,12 +62,12 @@ class TaskController extends Controller
      * Destroy the given task.
      *
      * @param  Request  $request
-     * @param  string  $taskId
+     * @param  Task     $task
      * @return Response
      */
-    public function destroy(Request $request, $taskId)
+    public function destroy(Request $request, Task $task)
     {
-        Task::findOrFail($taskId)->delete();
+        $task->delete();
     
         return redirect('/');
     }

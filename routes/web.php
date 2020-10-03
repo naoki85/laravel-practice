@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 Route::get('/', 'TaskController@index');
 Route::post('/task', 'TaskController@store');
-Route::delete('/task/{taskId}', 'TaskController@destroy');
+Route::delete('/task/{task}', 'TaskController@destroy');
 
 // Authentication Routes...
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
