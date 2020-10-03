@@ -11,7 +11,7 @@ class RouteTaskTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * GET /tasks
+     * GET /
      *
      * @return void
      */
@@ -19,7 +19,7 @@ class RouteTaskTest extends TestCase
     {
         $task = factory(Task::class)->create(['name' => 'new_task']);
 
-        $response = $this->get('/tasks');
+        $response = $this->get('/');
         $response->assertStatus(200);
         $this->assertRegExp('/'.$task->name.'/', $response->getContent());
     }

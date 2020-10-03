@@ -14,14 +14,10 @@
 use App\Task;
 use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 /**
  * Display All Tasks
  */
-Route::get('/tasks', function () {
+Route::get('/', function () {
     $tasks = Task::orderBy('created_at', 'asc')->get();
 
     return view('tasks', [
@@ -38,7 +34,7 @@ Route::post('/task', function(Request $request) {
     ]);
 
     if ($validator->fails()) {
-        return redirect('/tasks')
+        return redirect('/')
             ->withInput()
             ->withErrors($validator);
     }
@@ -47,7 +43,7 @@ Route::post('/task', function(Request $request) {
     $task->name = $request->name;
     $task->save();
 
-    return redirect('/tasks');
+    return redirect('/');
 });
 
 /**
