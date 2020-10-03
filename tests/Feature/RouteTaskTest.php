@@ -48,6 +48,8 @@ class RouteTaskTest extends TestCase
         $response->assertStatus(302);
 
         $this->assertEquals($before_tasks_count + 1, Task::all()->count());
+        $newTask = Task::orderBy('id', 'desc')->first();
+        $this->assertEquals($this->user->id, $newTask->user_id);
     }
 
     /**

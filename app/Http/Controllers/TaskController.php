@@ -44,10 +44,9 @@ class TaskController extends Controller
             'name' => 'required|max:255',
         ]);
 
-        $task = new Task;
-        $task->name = $request->name;
-        $task->save();
-    
+        $request->user()->tasks()->create([
+            'name' => $request->name,
+        ]);
         return redirect('/');
     }
     
