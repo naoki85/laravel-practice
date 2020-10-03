@@ -5,10 +5,19 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Task;
+use App\User;
 
 class RouteTaskTest extends TestCase
 {
     use RefreshDatabase;
+
+    private ?User $user = null;
+
+    public function setUp(): void
+    {
+      parent::setUp();
+      $this->user = factory(User::class)->create();
+    }
 
     /**
      * GET /
@@ -17,9 +26,9 @@ class RouteTaskTest extends TestCase
      */
     public function testGetIndex()
     {
-        $task = factory(Task::class)->create(['name' => 'new_task']);
+        $task = $this->user->tasks()->save(factory(Task::class)->make(['name' => 'new_task']));
 
-        $response = $this->get('/');
+        $response = $this->actingAs($this->user)->get('/');
         $response->assertStatus(200);
         $this->assertRegExp('/'.$task->name.'/', $response->getContent());
     }
@@ -35,7 +44,7 @@ class RouteTaskTest extends TestCase
     {
         $before_tasks_count = Task::all()->count();
 
-        $response = $this->post('/task', ['name' => 'new task']);
+        $response = $this->actingAs($this->user)->post('/task', ['name' => 'new task']);
         $response->assertStatus(302);
 
         $this->assertEquals($before_tasks_count + 1, Task::all()->count());
@@ -50,7 +59,7 @@ class RouteTaskTest extends TestCase
      */
     public function testFailureOfPostTask()
     {
-        $response = $this->post('/task', ['name' => str_repeat('a', 256)]);
+        $response = $this->actingAs($this->user)->post('/task', ['name' => str_repeat('a', 256)]);
         $response->assertStatus(302);
     }
 
@@ -62,9 +71,9 @@ class RouteTaskTest extends TestCase
      */
     public function testSuccessOfDeleteTask()
     {
-        $task = factory(Task::class)->create();
+        $task = $this->user->tasks()->save(factory(Task::class)->make());
 
-        $response = $this->delete('/task/'.$task->id);
+        $response = $this->actingAs($this->user)->delete('/task/'.$task->id);
         $response->assertStatus(302);
 
         $this->assertEmpty(Task::find($task->id));
@@ -78,10 +87,10 @@ class RouteTaskTest extends TestCase
      */
     public function testDisableOfDeletingOtherUserTask()
     {
-        $task = factory(Task::class)->create();
+        $task = $this->user->tasks()->save(factory(Task::class)->make());
 
         $request_id = $task->id + 1;
-        $response = $this->delete('/task/'.$request_id);
+        $response = $this->actingAs($this->user)->delete('/task/'.$request_id);
         $response->assertStatus(404);
     }
 }
