@@ -11,6 +11,20 @@ class RouteTaskTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * GET /tasks
+     *
+     * @return void
+     */
+    public function testGetIndex()
+    {
+        $task = factory(Task::class)->create(['name' => 'new_task']);
+
+        $response = $this->get('/tasks');
+        $response->assertStatus(200);
+        $this->assertRegExp('/'.$task->name.'/', $response->getContent());
+    }
+
+    /**
      * POST /task
      * test the success of task creation.
      * 事前にタスクの数を数えておき、作成後に 1 つ数が増えていること。
