@@ -58,3 +58,12 @@ Route::delete('/task/{id}', function($id) {
 
     return redirect('/');
 });
+
+// Authentication Routes...
+Route::get('/login', 'Auth\LoginController@showLoginForm');
+Route::post('/login', 'Auth\LoginController@login');
+Route::get('/logout', 'Auth\LoginController@logout');
+
+// Registration Routes...
+Route::get('/register', 'Auth\RegisterController@showRegistrationForm');
+Route::post('/register', 'Auth\RegisterController@register');
